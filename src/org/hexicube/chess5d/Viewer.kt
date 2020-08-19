@@ -5,6 +5,7 @@ import javax.imageio.ImageIO
 import javax.swing.*
 import java.awt.Graphics2D
 import java.net.URL
+import java.io.File
 
 fun sizedButton(text: String, width: Int, height: Int): JButton {
     val b = JButton(text)
@@ -29,7 +30,8 @@ private val GREENDARK_BG = Color(0, 150, 0)
 private val BLUE_BG = Color(150, 150, 255)
 private val BLUEDARK_BG = Color(100, 100, 255)
 
-private val PIECE_IMG = ImageIO.read(URL("file:///home/shadryx/Programs/java/5D-Chess-Game-Viewer/img/pieces.png"))
+private val PIECE_IMG = ImageIO.read(File("pieces.png"))
+//private val PIECE_IMG = ImageIO.read(Board::class.java.getResource("./pieces.png"))
 
 fun renderBoard(renderArea: JPanel, board: Board) {
     val boardContainer = JPanel()
@@ -117,6 +119,8 @@ fun constructErr(theGame: Game): JPanel {
 }
 
 fun main(args: Array<String>) {
+    print(System.getProperty("user.dir"))
+
     // gross, but it means it's always visible in the taskbar
     val frame = JFrame("5D Chess Viewer")
     frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE

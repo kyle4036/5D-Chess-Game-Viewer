@@ -1,2 +1,3 @@
 Java.gitignore
 lib/*
+src/org/hexicube/chess5d/Viewer.jar

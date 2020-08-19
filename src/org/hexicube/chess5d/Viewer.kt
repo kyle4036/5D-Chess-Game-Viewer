@@ -4,6 +4,7 @@ import java.awt.*
 import javax.imageio.ImageIO
 import javax.swing.*
 import java.awt.Graphics2D
+import java.net.URL
 
 fun sizedButton(text: String, width: Int, height: Int): JButton {
     val b = JButton(text)
@@ -28,7 +29,7 @@ private val GREENDARK_BG = Color(0, 150, 0)
 private val BLUE_BG = Color(150, 150, 255)
 private val BLUEDARK_BG = Color(100, 100, 255)
 
-private val PIECE_IMG = ImageIO.read(Board::class.java.getResource("/pieces.png"))
+private val PIECE_IMG = ImageIO.read(URL("file:///home/shadryx/Programs/java/5D-Chess-Game-Viewer/img/pieces.png"))
 
 fun renderBoard(renderArea: JPanel, board: Board) {
     val boardContainer = JPanel()
@@ -46,12 +47,12 @@ fun renderBoard(renderArea: JPanel, board: Board) {
         boardPanel.add(renderTile(null, -1, -1, board))
     }
     for (a in 0 until 10) boardPanel.add(renderTile(null, -1, -1, board))
-    
+
     val label = JLabel("L${board.line} T${board.time - (if(board.ply) 0 else 1)} ${if (!board.ply) "Black" else "White"}")
     label.setBounds(TILE_SIZE/2, TILE_SIZE/2 - 10, TILE_SIZE*9, 20)
     label.foreground = Color.WHITE
     boardContainer.add(label)
-    
+
     with (board.moveTravelData) {
         if (this != null) {
             val subtext = if (board.moveEnd == null) "Piece sent to L${this.line} T${this.time} ${(this.x+'a'.toInt()).toChar()}${this.y+1}"
@@ -62,10 +63,10 @@ fun renderBoard(renderArea: JPanel, board: Board) {
             boardContainer.add(label2)
         }
     }
-    
+
     boardPanel.setBounds(0, 0, BOARD_SIZE, BOARD_SIZE)
     boardContainer.add(boardPanel)
-    
+
     boardContainer.size = Dimension(BOARD_SIZE, BOARD_SIZE)
     boardContainer.minimumSize = Dimension(BOARD_SIZE, BOARD_SIZE)
     boardContainer.maximumSize = Dimension(BOARD_SIZE, BOARD_SIZE)
@@ -122,7 +123,7 @@ fun main(args: Array<String>) {
     frame.size = Dimension(800, 600)
     frame.isVisible = true
     frame.setLocationRelativeTo(null)
-    
+
     /*
     Game.states = Array<GameState>
     GameState.timelines = HashMap<Int, ArrayList<Board>>
@@ -131,16 +132,16 @@ fun main(args: Array<String>) {
     Board.ply = true if black to play, false if white to play
     Board.pieces = Array<Array<Pair<Piece, Boolean>?>> = A 2D array of all pieces in the format (Type, IsBlack), nullable for blank spots
     */
-    
+
     var theGame: Game?
-    
+
     do {
         val input = JTextArea()
         val pane = JScrollPane(input)
         pane.preferredSize = Dimension(150, 400)
         val opt = JOptionPane.showConfirmDialog(frame, pane, "Input transcript", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE)
         if (opt != JOptionPane.OK_OPTION) System.exit(0)
-    
+
         theGame = Game(input.text)
         if (theGame.error != null) {
             val opt = JOptionPane.showConfirmDialog(frame, constructErr(theGame), "Parse Error", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE)
@@ -175,24 +176,24 @@ fun main(args: Array<String>) {
                 val startTX = it.moveStart!!.first
                 val startBY = it.line - smallestLine
                 val startTY = it.moveStart!!.second
-            
+
                 // println("$startBX-$startTX : $startBY-$startTY")
-            
+
                 val srcX = startBX * (BOARD_SIZE + 10) + (startTX) * TILE_SIZE + TILE_SIZE + TILE_SIZE / 2 + 10
                 val srcY = startBY * (BOARD_SIZE + 10) + (7 - startTY) * TILE_SIZE + TILE_SIZE + TILE_SIZE / 2
-            
+
                 val endBX = it.moveTravelData!!.time * 2 - if (it.ply) 1 else 0
                 val endTX = it.moveTravelData!!.x
                 val endBY = it.moveTravelData!!.line - smallestLine
                 val endTY = it.moveTravelData!!.y
-            
+
                 // println("$endBX-$endTX : $endBY-$endTY")
-            
+
                 val dstX = endBX * (BOARD_SIZE + 10) + (endTX) * TILE_SIZE + TILE_SIZE + TILE_SIZE / 2 + 10
                 val dstY = endBY * (BOARD_SIZE + 10) + (7 - endTY) * TILE_SIZE + TILE_SIZE + TILE_SIZE / 2
-            
+
                 // println("$srcX:$srcY -> $dstX:$dstY")
-            
+
                 g.drawLine(srcX, srcY, dstX, dstY)
             }
         }
@@ -212,11 +213,11 @@ fun main(args: Array<String>) {
             }
             btn.background = GREENDARK_BG
             btn.isEnabled = false
-        
+
             gameContentArea.removeAll()
             listOfLines.clear()
             smallestLine = 0
-        
+
             stateInfo.third.timelines.toSortedMap().values.forEach {
                 val linePane = JPanel()
                 linePane.layout = BoxLayout(linePane, BoxLayout.X_AXIS)
@@ -232,7 +233,7 @@ fun main(args: Array<String>) {
                 gameContentArea.add(linePane)
                 gameContentArea.add(Box.createVerticalStrut(10))
             }
-        
+
             gameContentArea.add(Box.createVerticalGlue())
             gamePane.validate()
             gamePane.horizontalScrollBar.value = Int.MAX_VALUE
